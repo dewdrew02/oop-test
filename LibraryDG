@@ -230,14 +230,17 @@ export class Library {
 
   addRating(rating: number): string {
     let ratings : number = +prompt("How much rate?")!
-    if (isNaN(ratings) || ratings < 1 || ratings > 5) {
-        return "Invalid rating. Please provide a rating between 1 and 5.";
+    for (let i = 0; i < 1; i++) {
+        if (isNaN(ratings) || ratings < 1 || ratings > 5) {
+            ratings = +prompt("Invalid rating. Please provide a rating between 1 and 5.")!
+            i--;        
     } else {
         this.ratings.push(ratings);
-        return this.getAverageRating();
+      }
+      
     }
+    return this.getAverageRating();
   }
-
   getAverageRating(): string {
     if (this.ratings.length === 0) return "No ratings yet";
     const avg = this.ratings.reduce((a, b) => a + b, 0) / this.ratings.length;
@@ -248,7 +251,5 @@ export class Library {
 
 
   
-
-
 
 
