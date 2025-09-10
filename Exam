@@ -1,0 +1,24 @@
+import {  Book, videomedia,Thesis, LocalLibrary } from "./Librarys";  
+
+
+
+const book1 = new Book("The Great Gatsby", 1925, "F. Scott Fitzgerald");
+const rateBook = new LocalLibrary();
+const video = new videomedia("Inception", 2010, "Christopher Nolan", 148);
+const ratevideo = new LocalLibrary();
+const thesis1 = new Thesis("AI in Modern World", 2022, "Alice Johnson", "MIT")
+const ratethesis = new LocalLibrary();
+
+
+
+
+console.log("--------------------------------------------------");
+console.log(book1.getDetails());
+console.log(rateBook.addRating(5));
+console.log("--------------------------------------------------");
+console.log(video.getDetails());
+console.log(ratevideo.addRating(4));
+console.log("--------------------------------------------------");
+console.log(thesis1.getDetails());
+console.log(ratethesis.addRating(3));
+console.log("--------------------------------------------------");
