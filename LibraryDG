@@ -6,6 +6,9 @@ export interface Borrowable {
 
 
 export class LibraryItem implements Borrowable {
+    addRating(rating: number): string {
+        throw new Error("Method not implemented.");
+    }
  
   protected title: string;
   private available: boolean = true;
@@ -207,6 +210,45 @@ export class Library {
     }).join("\n");    
    return `Library Summary:\n${itemSummaries}`;
   }
-
 }
+
+
+
+  export class LocalLibrary implements Borrowable {
+  title: any;
+  borrow(member: string): void {
+      throw new Error("Method not implemented.");
+  }
+  Avaliable(): boolean {
+      throw new Error("Method not implemented.");
+  }
+  ReturnItem(): string | null {
+      throw new Error("Method not implemented.");
+  }
+
+  protected ratings: number[] = [];
+
+  addRating(rating: number): string {
+    let ratings : number = +prompt("How much rate?")!
+    if (isNaN(ratings) || ratings < 1 || ratings > 5) {
+        return "Invalid rating. Please provide a rating between 1 and 5.";
+    } else {
+        this.ratings.push(ratings);
+        return this.getAverageRating();
+    }
+  }
+
+  getAverageRating(): string {
+    if (this.ratings.length === 0) return "No ratings yet";
+    const avg = this.ratings.reduce((a, b) => a + b, 0) / this.ratings.length;
+    return `Average rating: ${avg.toFixed(2)} (${this.ratings.length} votes)`;
+  }
+}
+
+
+
+  
+
+
+
 
