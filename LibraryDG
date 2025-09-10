@@ -1,0 +1,212 @@
+export interface Borrowable {
+  borrow(member: string): void
+  Avaliable(): boolean
+  ReturnItem(): string | null
+}   
+
+
+export class LibraryItem implements Borrowable {
+ 
+  protected title: string;
+  private available: boolean = true;
+  private borrower: string | null = null;
+
+  constructor(title: string) {
+    this.title = title;
+  }
+    Avaliable(): boolean {
+        throw new Error("");
+    }
+    ReturnItem(): string | null {
+        throw new Error("");
+    }
+       getDetails(): string {
+        return `Library Item: ${this.title}`;
+    }
+      isAvailable(): boolean {
+    return this.available;
+    }
+
+  borrow(memberName: string): string {
+    if (this.available) {
+      this.available = false;
+      this.borrower = memberName;
+      return `Item "${this.title}" borrowed by ${memberName}`;
+    } else {
+      return `Item "${this.title}" is not available for borrowing`;
+    }
+  }
+
+  returnItem(): string {
+    if (!this.available && this.borrower) {
+      const message = `Item "${this.title}" returned`;
+      this.available = true;
+      this.borrower = null;
+      return message;
+    } else {
+      return `Item "${this.title}" was not borrowed`;
+    }
+  }
+
+
+}
+
+export class Book extends LibraryItem {
+  gettitle() {
+      throw new Error("Method not implemented.");
+  }
+  getAuthor() {
+      throw new Error("Method not implemented.");
+  }
+  toLowerCase() {
+    throw new Error("Method not implemented.");
+  }
+  private author: string;
+  private itemId: number;
+ 
+
+  constructor(title: string, itemId: number, author: string) {
+    super(title);
+    this.itemId = itemId;
+    this.author = author;
+  }
+
+  getDetails(): string {
+    return `Book: ${this.title} by ${this.author} (ID: ${this.itemId})`
+  }
+}
+
+export class videomedia extends LibraryItem {
+  private director: string;
+  public  itemId: number;
+  public duration: number; // in minutes
+
+    constructor(title: string, itemId: number, director: string, duration: number) {
+        super(title);
+        this.director = director;
+        this.itemId = itemId;
+        this.duration = duration;
+
+
+    }   
+    getDetails(): string {
+        return `videomedia: ${this.title} directed by ${this.director}, Duration: ${this.duration} mins (year: ${this.itemId})`
+    }   
+}
+
+export class Thesis extends LibraryItem {
+    private studentName: string;
+    private university: string;
+    constructor(title: string, itemId: number, studentName: string, university: string) {
+        super(title);
+        this.studentName = studentName;
+        this.university = university;
+
+    }
+    getDetails(): string {
+        return `Thesis: ${this.title} by ${this.studentName} from ${this.university}`
+    }
+ }
+
+    export class LibraryMember {
+        rateBook(selectedBook: Book, rating: number) {
+            throw new Error("Method not implemented.");
+        }
+      getMemberId(): number {
+        return this.memberId;
+      }    
+        private memberName: string;
+        private memberId: number
+        private borrowedItems: LibraryItem[] = [];
+
+
+        constructor(name: string, memberId: number) {
+            this.memberName = name
+            this.memberId = memberId
+            this.borrowedItems = []
+        }
+        borrowItem(item: LibraryItem): string {
+            if (item.isAvailable()) {
+                this.borrowedItems.push(item);
+                return item.borrow(this.memberName);
+            } else {
+                return `Item "${item.getDetails()}" is not available for borrowing`;
+            }
+        }
+        get MemberName(): string {
+            return this.memberName
+        }
+        borrowedItemList(item : LibraryItem): string {
+            if (this.borrowedItems.length === 0) {
+                return `${this.memberName} has not borrowed any items.`;
+            }
+            const itemDetails = this.borrowedItems.map(i => i.getDetails()).join(", ");
+            return `${this.memberName} has borrowed: ${itemDetails}`;
+
+    }
+    returnItem(itemId: number): string {
+        const idx = this.borrowedItems.findIndex(item => 
+            (item as any).itemId === itemId
+        );
+        if (idx !== -1) {
+            const item = this.borrowedItems[idx];
+            const result = item.returnItem();
+            this.borrowedItems.splice(idx, 1);
+            return result;
+        } else {
+            return `Item with ID ${itemId} not found in borrowed items`;
+        }
+    }
+
+    listBorrowedItems(): string {
+        if (this.borrowedItems.length === 0) {
+            return `${this.memberName} has not borrowed any items.`;
+        }
+        const itemDetails = this.borrowedItems.map(i => i.getDetails()).join(", ");
+        return `${this.memberName} has borrowed: ${itemDetails}`;
+    }
+}
+
+export class Library {
+    private items: LibraryItem[] = [];
+    private members: LibraryMember[] = [];
+
+
+  addItem(item: LibraryItem): void {
+      this.items.push(item);
+  }
+  addMember(member: LibraryMember): void {
+      this.members.push(member);
+  }
+  findItemById(itemId: number): LibraryItem | undefined {
+      return this.items.find(item => (item as any).itemId === itemId);
+  }
+    findMemberById(memberId: number): LibraryMember | undefined {
+    return this.members.find(member => member.getMemberId() === memberId);
+  }
+  borrowItem(memberId: number, itemId: number): string {
+    const member = this.findMemberById(memberId);
+    const item = this.findItemById(itemId);
+
+    if (!member) return `Member with ID ${memberId} not found`;
+    if (!item) return `Item with ID ${itemId} not found`;
+
+    return member.borrowItem(item);
+  }
+
+  returnItem(memberId: number, itemId: number): string {
+    const member = this.findMemberById(memberId);
+    if (!member) return `Member with ID ${memberId} not found`;
+    return member.returnItem(itemId);
+  }
+
+  getlibrarySummary(): string {
+    const itemSummaries = this.items.map(item => {
+        const status = item.isAvailable() ? "Available" : "Borrowed";
+        return `${item.getDetails()} - ${status}`;
+    }).join("\n");    
+   return `Library Summary:\n${itemSummaries}`;
+  }
+
+}
+
